@@ -39,15 +39,18 @@
   preserve_end
 %endmacro
 
+; ssize_t send(int socket, const void *buffer, size_t length, int flags);
+; ssize_t recv(int socket, void *buffer, size_t length, int flags);
+; MSG_WAITALL = 256 ( & 0x1 which is 0)
 
 section .data
   newline: db `\n`
 
-  hello: string 'Hello world!'
   strStackSetup: string 'Setting up stack.'
   strSocketParams: string 'Setting socket parameters.'
   strSocketCall: string 'Invoking socketcall.'
   strSocketClose: string 'Closing socket.'
+  strExit: string 'Exiting...'
 
   network: string 'irc.ninthbit.net'
   port: dd 6667
@@ -97,7 +100,7 @@ _start:
   add dword esp, 16
   pop dword ebp
 
-  println hello
+  println strExit
 
   ; exit(0)
   mov eax, 1
