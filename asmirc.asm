@@ -38,6 +38,7 @@ _start:
   mov  ebp, esp
   sub  esp, 16
 
+  ; Initialize socket
   print strSocketInit
   socketInit
   println strDone
@@ -48,9 +49,8 @@ _start:
   socketClose
   println strDone
 
-  println strExit
-
   ; exit(0)
+  println strExit
   mov eax, 1
   mov ebx, 0
   int 0x80
