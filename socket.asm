@@ -13,12 +13,12 @@ FLAGS       equ MSG_WAITALL & 0x1
   mov ebx, 1      ; socket
   lea ecx, [ebp - 12]  ; address of parameter array
   int 0x80
-  mov dword [ebp - 16], eax
+  mov [fd], eax
 %endmacro
 
 %macro socketClose 0
   mov dword eax, 6          ; close
-  mov dword ebx, [ebp - 16] ; load socket fd
+  mov dword ebx, fd         ; load socket fd
   int 0x80
 %endmacro
 

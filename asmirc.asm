@@ -1,6 +1,9 @@
 %include 'macros.asm'
 %include 'socket.asm'
 
+section .bss
+  fd: resb 4 ; File descriptor for the socket (dword, 4 bytes)
+
 section .data
   newline: db `\n`
 
