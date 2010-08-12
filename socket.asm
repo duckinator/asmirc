@@ -25,6 +25,10 @@ FLAGS       equ MSG_WAITALL & 0x1
 %macro send 1
 ; %1 == buffer
 ; ssize_t send(int socket, const void *buffer, size_t length, int flags);
+  mov ebx, %1    ; The string is the first argument here,
+                 ; but second to _fd_send
+  mov eax, [fd]  ; Use fd saved in socketInit
+  call _fd_write
 %endmacro
 
 %macro recv 1
