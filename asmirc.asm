@@ -1,4 +1,5 @@
 %include 'macros.asm'
+%include 'socket.asm'
 
 ; ssize_t send(int socket, const void *buffer, size_t length, int flags);
 ; ssize_t recv(int socket, void *buffer, size_t length, int flags);
@@ -8,10 +9,10 @@ section .data
   newline: db `\n`
 
   strStackSetup: string 'Setting up stack.'
-  strSocketParams: string 'Setting socket parameters.'
-  strSocketCall: string 'Invoking socketcall.'
+  strSocketInit: string 'Initializing socket...'
   strSocketClose: string 'Closing socket.'
   strExit: string 'Exiting...'
+  strDone: string 'Done.'
 
   network: string 'irc.ninthbit.net'
   port: dd 6667
@@ -37,19 +38,9 @@ _start:
   mov  ebp, esp
   sub  esp, 16
 
-  ; Parameters for socket(2)
-  println strSocketParams
-  mov dword [ebp - 12], 2 ; PF_INET
-  mov dword [ebp - 8],  1 ; SOCK_STREAM
-  mov dword [ebp - 4],  0
-
-  ; invoke socketcall
-  println strSocketCall
-  mov eax, 102    ; socketcall
-  mov ebx, 1      ; socket
-  lea ecx, [ebp - 12]  ; address of parameter array
-  int 0x80
-  mov dword [ebp - 16], eax
+  print strSocketInit
+  socketInit
+  println strDone
 
 
   ; close socket

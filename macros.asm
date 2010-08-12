@@ -1,4 +1,4 @@
-; Macros for asmirc
+; Misc macros for asmirc
 
 %macro string 1
   %strlen count %1
