@@ -24,8 +24,8 @@ global _start
 _print:
   mov ecx, eax         ; Put the first arg in ecx,
                        ; it needs to be there for the syscall
-  mov eax, 4           ; ?
-  mov ebx, 1           ; ?
+  mov eax, 4           ; syscall #4
+  mov ebx, 1           ; fd number (stdout)
   mov dword edx, [ecx] ; Put length in edx
   add ecx, 4           ; Increment ecx by 4,
                        ; so we get the string instead of the length
