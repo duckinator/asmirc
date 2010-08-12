@@ -10,7 +10,7 @@ section .data
 
   strStackSetup: string 'Setting up stack.'
   strSocketInit: string 'Initializing socket...'
-  strSocketClose: string 'Closing socket.'
+  strSocketClose: string 'Closing socket...'
   strExit: string 'Exiting...'
   strDone: string 'Done.'
 
@@ -44,13 +44,9 @@ _start:
 
 
   ; close socket
-  println strSocketClose
-  mov dword eax, 6          ; close
-  mov dword ebx, [ebp - 16] ; load socket fd
-  int 0x80
-
-  add dword esp, 16
-  pop dword ebp
+  print strSocketClose
+  socketClose
+  println strDone
 
   println strExit
 
