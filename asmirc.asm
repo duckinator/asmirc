@@ -1,18 +1,15 @@
 %include 'macros.asm'
 %include 'socket.asm'
 
-; ssize_t send(int socket, const void *buffer, size_t length, int flags);
-; ssize_t recv(int socket, void *buffer, size_t length, int flags);
-; MSG_WAITALL = 256 ( & 0x1 which is 0)
-
 section .data
   newline: db `\n`
 
-  strStackSetup: string 'Setting up stack.'
-  strSocketInit: string 'Initializing socket...'
-  strSocketClose: string 'Closing socket...'
-  strExit: string 'Exiting...'
-  strDone: string 'Done.'
+  strStackSetupStart: string 'Setting up stack...'
+  strStackSetupEnd:   string 'Cleaning up stack...'
+  strSocketInit:      string 'Initializing socket...'
+  strSocketClose:     string 'Closing socket...'
+  strExit:            string 'Exiting...'
+  strDone:            string 'Done.'
 
   nickname: string 'asmirc'
   network: string 'irc.ninthbit.net'
@@ -34,10 +31,7 @@ _print:
 
 _start:
   ; Set up stack frame for file descriptor + socket + params for socket call
-  println strStackSetup
-  push dword ebp
-  mov  ebp, esp
-  sub  esp, 16
+  stackSetupStart 16
 
   ; Initialize socket
   print strSocketInit
@@ -49,6 +43,8 @@ _start:
   print strSocketClose
   socketClose
   println strDone
+
+  stackSetupEnd 16
 
   ; exit(0)
   println strExit

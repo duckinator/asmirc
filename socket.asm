@@ -1,5 +1,8 @@
 ; Socket macros for asmirc
 
+MSG_WAITALL equ 256
+FLAGS       equ MSG_WAITALL & 0x1
+
 %macro socketInit 0
   ; Parameters for socket(2)
   mov dword [ebp - 12], 2 ; PF_INET
@@ -17,7 +20,14 @@
   mov dword eax, 6          ; close
   mov dword ebx, [ebp - 16] ; load socket fd
   int 0x80
+%endmacro
 
-  add dword esp, 16
-  pop dword ebp
+%macro send 1
+; %1 == buffer
+; ssize_t send(int socket, const void *buffer, size_t length, int flags);
+%endmacro
+
+%macro recv 1
+; %1 == buffer
+; ssize_t recv(int socket, void *buffer, size_t length, int flags);
 %endmacro

@@ -40,3 +40,22 @@
   int 0x80
   preserve_end
 %endmacro
+
+%macro stackSetupStart 1
+  print strStackSetupStart
+
+  push dword ebp
+  mov  ebp, esp
+  sub  esp, %1
+
+  println strDone
+%endmacro
+
+%macro stackSetupEnd 1
+  print strStackSetupEnd
+
+  add dword esp, %1
+  pop dword ebp
+
+  println strDone
+%endmacro
