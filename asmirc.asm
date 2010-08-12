@@ -14,6 +14,7 @@ section .data
   strExit: string 'Exiting...'
   strDone: string 'Done.'
 
+  nickname: string 'asmirc'
   network: string 'irc.ninthbit.net'
   port: dd 6667
 
