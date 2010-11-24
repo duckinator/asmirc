@@ -22,6 +22,32 @@ FLAGS       equ MSG_WAITALL & 0x1
   int 0x80
 %endmacro
 
+
+%macro socketBind 0
+  ; Parameters for bind(2)
+;  mov dword [ebp - 12], 2 ; PF_INET
+;  mov dword [ebp - 8],  1 ; SOCK_STREAM
+;  mov dword [ebp - 4],  0
+
+  mov eax, 102    ; socketcall
+  mov ebx, 2      ; bind
+  lea ecx, [ebp - 12]  ; address of parameter array
+  int 0x80
+%endmacro
+
+%macro socketConnect 0
+  ; Parameters for connect(2)
+;  mov dword [ebp - 12], 2 ; PF_INET
+;  mov dword [ebp - 8],  1 ; SOCK_STREAM
+;  mov dword [ebp - 4],  0
+
+  mov eax, 102    ; socketcall
+  mov ebx, 3      ; connect
+  lea ecx, [ebp - 12]  ; address of parameter array
+  int 0x80
+%endmacro
+
+
 %macro send 1
 ; %1 == buffer
 ; ssize_t send(int socket, const void *buffer, size_t length, int flags);
