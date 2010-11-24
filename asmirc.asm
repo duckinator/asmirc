@@ -41,11 +41,7 @@ _start:
 
   ; Connect socket
   ; oh lord, this is a mess to print...i should clean this up later! :D
-  print strSocketConnect
-  print network
-  print strAs
-  print nickname
-  print strElipsis
+  print strSocketConnect, network, strAs, nickname, strElipsis
   socketConnect
   println strDone
 
