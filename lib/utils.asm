@@ -1,5 +1,8 @@
 ; Misc utility functions for asmirc, mostly abstracted away via macros.asm
 
+%ifndef utils_asm
+%define utils_asm
+
 _fd_write:
   mov ecx, ebx         ; Move string to ecx,
                        ; it needs to be there for the syscall
@@ -12,10 +15,4 @@ _fd_write:
   int 0x80             ; Syscall
   ret                  ; Return
 
-_print:
-  mov ebx, eax ; The string is the first argument here,
-               ; but second to _fd_send
-  mov eax, 1   ; Use fd 1 (stdout)
-  call _fd_write
-  ret
-
+%endif ; utils_asm

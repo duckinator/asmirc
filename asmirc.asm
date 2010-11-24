@@ -1,13 +1,7 @@
-%include 'utils.asm'
 %include 'macros.asm'
 %include 'socket.asm'
 
-section .bss
-  fd: resb 4 ; File descriptor for the socket (dword, 4 bytes)
-
 section .data
-  newline: db `\n`
-
   strStackSetupStart: string 'Setting up stack...'
   strStackSetupEnd:   string 'Cleaning up stack...'
   strSocketInit:      string 'Initializing socket...'
@@ -30,7 +24,6 @@ _start:
   print strSocketInit
   socketInit
   println strDone
-
 
   ; close socket
   print strSocketClose

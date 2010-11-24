@@ -1,10 +1,14 @@
 ; Misc macros for asmirc
+; Requires utils.asm
 
-%macro string 1
-  %strlen count %1
-  dd count
-  db %1
-%endmacro
+%ifndef macros_asm
+%define macros_asm
+
+%include 'string.asm'
+
+SECTION .data
+newline: db `\n`
+__SECT__:
 
 %macro preserve_start 0
   push edx
@@ -18,27 +22,6 @@
   pop ebx
   pop ecx
   pop edx
-%endmacro
-
-%macro print 1
-  preserve_start
-
-  mov eax, %1
-  call _print
-
-  preserve_end
-%endmacro
-
-%macro println 1
-  print %1
-
-  preserve_start
-  mov eax, 4
-  mov ebx, 1
-  mov ecx, newline
-  mov dword edx, 1
-  int 0x80
-  preserve_end
 %endmacro
 
 %macro stackSetupStart 1
@@ -59,3 +42,6 @@
 
   println strDone
 %endmacro
+
+
+%endif ; macros_asm
