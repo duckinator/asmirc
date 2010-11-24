@@ -81,9 +81,9 @@ FLAGS       equ MSG_WAITALL & 0x1
 ;  mov dword [ebp - 8],  [ip4addr] ; load sockaddr
 ;  mov dword [ebp - 12], ip4addrEnd - ip4addr
 
-  mov eax, 102    ; socketcall
-  mov ebx, 2      ; bind
-  lea ecx, [ebp - 12]  ; address of parameter array
+  mov eax, SYS_SOCKETCALL    ; socketcall
+  mov ebx, SYS_BIND          ; bind
+  lea ecx, [ebp - 12]        ; address of parameter array
   int 0x80
 %endmacro
 
@@ -99,8 +99,8 @@ FLAGS       equ MSG_WAITALL & 0x1
   mov dword [ebp - 8],  ip4addr    ; load sockaddr
   mov dword [ebp - 12], ip4addrEnd - ip4addr
 
-  mov eax, 102    ; socketcall
-  mov ebx, 3      ; connect
+  mov eax, SYS_SOCKETCALL    ; socketcall
+  mov ebx, SYS_CONNECT       ; connect
   lea ecx, [ebp - 12]  ; address of parameter array
   int 0x80
 
