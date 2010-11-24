@@ -12,7 +12,7 @@
 %macro print 1
   preserve_start
 
-  mov ebx, %1 ; The string is the first argument here,
+  mov ebx, %1  ; The string is the first argument here,
                ; but second to _fd_send
   mov eax, 1   ; Use fd 1 (stdout)
   call _fd_write

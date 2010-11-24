@@ -5,8 +5,23 @@
 
 %include 'utils.asm'
 
+%define hton(x) ((x & 0xFF000000) >> 24) | ((x & 0x00FF0000) >>  8) | ((x & 0x0000FF00) <<  8) | ((x & 0x000000FF) << 24)
+%define htons(x) ((x >> 8) & 0xFF) | ((x & 0xFF) << 8)
+%define htonl(x) (((x & 0xff000000) >> 24) | \
+                  ((x & 0x00ff0000) >> 8)  | \
+                  ((x & 0x0000ff00) << 8)  | \
+                  ((x & 0x000000ff) << 24))
+
+%define iptol(a, b, c, d) (d + c * 256 + b * 65536 + a * 16777216)
+
 SECTION .bss
   fd: resb 4 ; File descriptor for the socket (dword, 4 bytes)
+  ip4addr:
+    ip4addr.sin_family resw  1
+    ip4addr.sin_port   resw  1
+    ip4addr.sin_addr   resd  1
+    ip4addr.sin_zero   resb  1
+  ip4addrEnd:
 __SECT__:
 
 
@@ -33,18 +48,18 @@ STDOUT         equ 1
 MSG_WAITALL equ 256
 FLAGS       equ MSG_WAITALL & 0x1
 
-struc sockaddr_in
-    .sin_family resw 1
-    .sin_port   resw 1
-    .sin_addr   resd 1
-    .sin_zero   resb 8
-endstruc
+;struc sockaddr_in
+;    .sin_family resw 1
+;    .sin_port   resw 1
+;    .sin_addr   resd 1
+;    .sin_zero   resb 8
+;endstruc
 
 %macro socketInit 0
   ; Parameters for socket(2)
-  mov dword [ebp - 12], AF_INET
-  mov dword [ebp - 8],  SOCK_STREAM
   mov dword [ebp - 4],  INADDR_ANY
+  mov dword [ebp - 8],  SOCK_STREAM
+  mov dword [ebp - 12], AF_INET
 
   mov eax, SYS_SOCKETCALL
   mov ebx, SYS_SOCKET
@@ -62,9 +77,9 @@ endstruc
 
 %macro socketBind 0
   ; Parameters for bind(2)
-;  mov dword [ebp - 12], 2 ; PF_INET
-;  mov dword [ebp - 8],  1 ; SOCK_STREAM
-;  mov dword [ebp - 4],  0
+;  mov dword [ebp - 4],  fd       ; load socket fd
+;  mov dword [ebp - 8],  [ip4addr] ; load sockaddr
+;  mov dword [ebp - 12], ip4addrEnd - ip4addr
 
   mov eax, 102    ; socketcall
   mov ebx, 2      ; bind
@@ -74,16 +89,22 @@ endstruc
 
 %macro socketConnect 0
   ; Parameters for connect(2)
-;  mov dword [ebp - 12], 2 ; PF_INET
-;  mov dword [ebp - 8],  1 ; SOCK_STREAM
-;  mov dword [ebp - 4],  0
+  preserve_start
 
-;  mov dword [ebp - 12], sockaddr_in
+  mov dword [ip4addr.sin_addr], networkNBO
+  mov dword [ip4addr.sin_port], port
+  mov byte  [ip4addr.sin_zero], 0
+
+  mov dword [ebp - 4],  fd         ; load socket fd
+  mov dword [ebp - 8],  ip4addr    ; load sockaddr
+  mov dword [ebp - 12], ip4addrEnd - ip4addr
 
   mov eax, 102    ; socketcall
   mov ebx, 3      ; connect
   lea ecx, [ebp - 12]  ; address of parameter array
   int 0x80
+
+  preserve_end
 %endmacro
 
 
@@ -94,6 +115,11 @@ endstruc
                  ; but second to _fd_send
   mov eax, [fd]  ; Use fd saved in socketInit
   call _fd_write
+%endmacro
+
+%macro sendln 1
+  send %1
+  send newline
 %endmacro
 
 %macro recv 1
