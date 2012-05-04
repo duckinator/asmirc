@@ -7,6 +7,6 @@ asmirc.o: asmirc.asm
 	nasm -I lib/ -f elf32 asmirc.asm
 
 clean:
-	rm asmirc.o asmirc
+	rm -f asmirc.o asmirc
 
 .PHONY: all clean
