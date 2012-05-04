@@ -112,7 +112,11 @@ FLAGS       equ MSG_WAITALL & 0x1
 ; %1 == buffer
 ; ssize_t send(int socket, const void *buffer, size_t length, int flags);
   
-  mov edx, 0     ; Flags
+  println %1
+  
+  preserve_start
+
+  mov edx, FLAGS ; Flags
   
   mov ebx, %1    ; Put string (%1/buffer) in ebx
   call strlen    ; Call strlen, which puts the length in ecx
@@ -121,10 +125,15 @@ FLAGS       equ MSG_WAITALL & 0x1
                  ; but second to _fd_send
   mov eax, [fd]  ; Use fd saved in socketInit
   call _fd_write
+  
+  preserve_end
 %endmacro
 
-%macro sendln 1
+%macro sendln 1-*
+  %rep %0
   send %1
+  %rotate 1
+  %endrep
   send newline
 %endmacro
 

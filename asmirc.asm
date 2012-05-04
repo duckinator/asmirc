@@ -44,10 +44,9 @@ _start:
   print strSocketConnect, network, strAs, nickname, strElipsis
   socketConnect
   println strDone
-
+  
   sendln ircUser
-  send strNick
-  sendln nickname
+  sendln strNick, nickname
 
   ; close socket
   print strSocketClose

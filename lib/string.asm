@@ -27,7 +27,8 @@
 %macro println 1-*
   %rep %0
   print %1
-
+  %rotate 1
+  %endrep
   preserve_start
   mov eax, 4
   mov ebx, 1
@@ -35,8 +36,6 @@
   mov dword edx, 1
   int 0x80
   preserve_end
-  %rotate 1
-  %endrep
 %endmacro
 
 %endif
