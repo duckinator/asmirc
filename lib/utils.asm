@@ -15,4 +15,18 @@ _fd_write:
   int 0x80             ; Syscall
   ret                  ; Return
 
+; Pointer to a string put in ebx, length output in ecx
+strlen:
+  push ebx
+  mov ecx, 0
+  dec ebx
+  count:
+    inc ecx
+    inc ebx
+    cmp byte[ebx], 0
+    jnz count
+  dec ecx
+  pop ebx
+  ret
+
 %endif ; utils_asm
