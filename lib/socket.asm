@@ -55,6 +55,8 @@ FLAGS       equ MSG_WAITALL & 0x1
 ;    .sin_zero   resb 8
 ;endstruc
 
+SECTION .TEXT
+
 %macro socketInit 0
   ; Parameters for socket(2)
   mov dword [ebp - 4],  INADDR_ANY
@@ -108,30 +110,69 @@ FLAGS       equ MSG_WAITALL & 0x1
 %endmacro
 
 
-%macro send 1
+_send:
 ; %1 == buffer
 ; ssize_t send(int socket, const void *buffer, size_t length, int flags);
   
-  println %1
+  ;call _println
   
-  preserve_start
+  ;preserve_start
+  push edx
+  push ecx
+  push eax
 
   mov edx, FLAGS ; Flags
   
-  mov ebx, %1    ; Put string (%1/buffer) in ebx
+  ;mov ebx, %1    ; Put string (%1/buffer) in ebx
+  ; Argument for strlen is in ebx
   call strlen    ; Call strlen, which puts the length in ecx
   
-  mov ebx, %1    ; The string is the first argument here,
+  ;mov ebx, %1    ; The string is the first argument here,
                  ; but second to _fd_send
   mov eax, [fd]  ; Use fd saved in socketInit
   call _fd_write
   
-  preserve_end
+  pop eax
+  pop ecx
+  pop edx
+  ret
+
+_sendln:
+  push edx
+  push ecx
+  push eax
+  
+  ; Argument for _send is in ebx
+  call _send
+  
+  push ebx
+  
+  mov ebx, newline
+  call _send
+  
+  pop ebx
+  
+  pop eax
+  pop ecx
+  pop edx
+  ret
+
+%macro send 1-*
+  %rep %0
+  mov ebx, %1
+  call _print
+  mov ebx, %1
+  call _send
+  %rotate 1
+  %endrep
 %endmacro
 
 %macro sendln 1-*
   %rep %0
-  send %1
+  mov ebx, %1
+  call _println
+  mov ebx, %1
+  call _sendln
   %rotate 1
   %endrep
   send newline

@@ -9,33 +9,59 @@
   db %1
 %endmacro
 
-%macro print 1-*
-  preserve_start
-
-  %rep %0
-  mov ebx, %1  ; The string is the first argument here,
-               ; but second to _fd_send
+_print:
+  ;push edx
+  ;push ecx
+  ;push eax
+  
+  ; String (second argument to _fd_send) is already in ebx
+  
   mov eax, 1   ; Use fd 1 (stdout)
   call _fd_write
+  
+  ;preserve_end
+  
+  ;pop eax
+  ;pop ecx
+  ;pop edx
+  ret
 
-  %rotate 1
-  %endrep
-
-  preserve_end
-%endmacro
-
-%macro println 1-*
-  %rep %0
-  print %1
-  %rotate 1
-  %endrep
-  preserve_start
+_println:
+  call _print
+  
+  ;push edx
+  ;push ecx
+  ;push ebx
+  ;push eax
+  
   mov eax, 4
   mov ebx, 1
   mov ecx, newline
   mov dword edx, 1
   int 0x80
-  preserve_end
+  
+  ;pop eax
+  ;pop ebx
+  ;pop ecx
+  ;pop edx
+  ret
+
+
+%macro print 1-*
+  %rep %0
+  mov ebx, %1
+  call _print
+  %rotate 1
+  %endrep
 %endmacro
+
+%macro println 1-*
+  %rep %0
+  mov ebx, %1
+  call _println
+  %rotate 1
+  %endrep
+%endmacro
+
 
 %endif

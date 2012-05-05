@@ -40,14 +40,16 @@ _start:
 
 
   ; Connect socket
-  ; oh lord, this is a mess to print...i should clean this up later! :D
+  ; prints "Connecting to [network] as [nickname]..."
   print strSocketConnect, network, strAs, nickname, strElipsis
+  
   socketConnect
   println strDone
   
+  ; Log in
   sendln ircUser
   sendln strNick, nickname
-
+  
   ; close socket
   print strSocketClose
   socketClose
@@ -55,8 +57,9 @@ _start:
 
   stackSetupEnd 16
 
-  ; exit(0)
   println strExit
+  
+  ; exit(0)
   mov eax, 1
   mov ebx, 0
   int 0x80
