@@ -91,22 +91,28 @@ SECTION .TEXT
 
 %macro socketConnect 0
   ; Parameters for connect(2)
-  preserve_start
-
+  push edx
+  push ecx
+  push ebx
+  push eax
+  
   mov dword [ip4addr.sin_addr], networkNBO
   mov dword [ip4addr.sin_port], port
   mov byte  [ip4addr.sin_zero], 0
-
+  
   mov dword [ebp - 4],  fd         ; load socket fd
   mov dword [ebp - 8],  ip4addr    ; load sockaddr
   mov dword [ebp - 12], ip4addrEnd - ip4addr
-
+  
   mov eax, SYS_SOCKETCALL    ; socketcall
   mov ebx, SYS_CONNECT       ; connect
   lea ecx, [ebp - 12]  ; address of parameter array
   int 0x80
-
-  preserve_end
+  
+  pop eax
+  pop ebx
+  pop ecx
+  pop edx
 %endmacro
 
 
@@ -116,15 +122,12 @@ _send:
   
   ;call _println
   
-  ;preserve_start
   push edx
   push ecx
   push eax
 
   mov edx, FLAGS ; Flags
   
-  ;mov ebx, %1    ; Put string (%1/buffer) in ebx
-  ; Argument for strlen is in ebx
   call strlen    ; Call strlen, which puts the length in ecx
   
   ;mov ebx, %1    ; The string is the first argument here,

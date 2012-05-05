@@ -10,20 +10,6 @@ SECTION .data
 newline: db `\n`
 __SECT__:
 
-%macro preserve_start 0
-  push edx
-  push ecx
-  push ebx
-  push eax
-%endmacro
-
-%macro preserve_end 0
-  pop eax
-  pop ebx
-  pop ecx
-  pop edx
-%endmacro
-
 %macro stackSetupStart 1
   print strStackSetupStart
 
