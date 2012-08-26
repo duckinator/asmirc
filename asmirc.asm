@@ -1,6 +1,8 @@
 %include 'macros.asm'
 %define _networkNBO ; temporary. we're defining networkNBO later.
+
 %include 'socket.asm'
+%include 'time.asm'
 
 ;section .bss
 ;  networkNBO: resd 1
@@ -45,6 +47,11 @@ _start:
   
   socketConnect
   println strDone
+  
+;  sleep 5
+  mov eax, 5 ; seconds
+  mov ebx, 0 ; nanoseconds
+  call _nanosleep
   
   ; Log in
   sendln ircUser
