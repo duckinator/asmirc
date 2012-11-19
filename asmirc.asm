@@ -3,6 +3,7 @@
 
 %include 'socket.asm'
 %include 'time.asm'
+%include 'hacks.asm'
 
 ;section .bss
 ;  networkNBO: resd 1
@@ -23,6 +24,11 @@ section .data
 
   nickname: string 'asmirc'
   network:  string "72.14.179.233" ; Convert this to something able to be placed in socketaddr_in.sin_addr
+  strJoin: string "JOIN #bots"
+
+  hack: dd 0
+  strBusyLoop: string 'Running busy loop...'
+  strEmpty: string ''
 
 section .text
 global _start
@@ -48,15 +54,19 @@ _start:
   socketConnect
   println strDone
   
-;  sleep 5
-  mov eax, 5 ; seconds
-  mov ebx, 0 ; nanoseconds
-  call _nanosleep
+  ;sleep 5
+  busyloop 10000000 ; ~3.5s on my desktop
   
   ; Log in
   sendln ircUser
   sendln strNick, nickname
+
+  busyloop 10000000 ; ~3.5s on my desktop
+
+  sendln strJoin
   
+  busyloop 10000000 ; ~3.5s on my desktop
+
   ; close socket
   print strSocketClose
   socketClose

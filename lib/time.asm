@@ -20,23 +20,23 @@ _nanosleep:
   ; int nanosleep(const struct timespec *rqtp, struct timespec *rmtp);
   push edx
   push ecx
-  ;push ebx
-  ;push eax
+  push ebx
+  push eax
   
-  mov dword [t1 + timespec.tv_sec],  eax ; seconds
-  mov dword [t1 + timespec.tv_nsec], ebx ; nanoseconds
+;  mov dword [t1 + timespec.tv_sec],  eax ; seconds
+;  mov dword [t1 + timespec.tv_nsec], ebx ; nanoseconds
   
-  mov dword [ebp - 4],  fd         ; load socket fd
-  mov dword [ebp - 8],  ip4addr    ; load sockaddr
-  mov dword [ebp - 12], ip4addrEnd - ip4addr
+;  mov dword [ebp - 4],  fd         ; load socket fd
+;  mov dword [ebp - 8],  ip4addr    ; load sockaddr
+;  mov dword [ebp - 12], ip4addrEnd - ip4addr
   
   mov eax, SYS_NANOSLEEP   ; nanosleep()
   mov ebx, t1              ; rqtp (first arg)
   mov ecx, t2              ; rmtp (second arg)
   int 0x80
   
-  ;pop eax
-  ;pop ebx
+  pop eax
+  pop ebx
   pop ecx
   pop edx
   ret
