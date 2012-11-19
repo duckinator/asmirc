@@ -161,11 +161,6 @@ _sendln:
   ret
 
 %macro send 1-*
-  push edx
-  push ecx
-  push ebx
-  push eax
-
   %rep %0
   mov ebx, %1
   call _print
@@ -173,19 +168,9 @@ _sendln:
   call _send
   %rotate 1
   %endrep
-
-  pop eax
-  pop ebx
-  pop ecx
-  pop edx
 %endmacro
 
 %macro sendln 1-*
-  push edx
-  push ecx
-  push ebx
-  push eax
-
   %rep %0
   mov ebx, %1
   call _println
@@ -198,27 +183,12 @@ _sendln:
   call _print
   mov ebx, newline
   call _send
-
-  pop eax
-  pop ebx
-  pop ecx
-  pop edx
 %endmacro
 
 %macro recv 1
 ; %1 == buffer
 ; ssize_t recv(int socket, void *buffer, size_t length, int flags);
 
-  push edx
-  push ecx
-  push ebx
-  push eax
-
-
-  pop eax
-  pop ebx
-  pop ecx
-  pop edx
 %endmacro
 
 %endif ; socket_asm
